@@ -1,3 +1,5 @@
+#' Get Frames Box
+#'
 get_frames_box <- function() {
   shinydashboardPlus::box(
     id = "box_frame_viewer",

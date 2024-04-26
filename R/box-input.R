@@ -1,6 +1,8 @@
+#' Get Input Box
+#'
 get_input_box <- function () {
   shinydashboardPlus::box(
-    title = boxLabel("Signature", status = "primary"),
+    title = shinydashboardPlus::boxLabel("Signature", status = "primary"),
     label = "Click Image to Select Region",
     collapsible = TRUE,
     collapsed = FALSE,
@@ -9,7 +11,7 @@ get_input_box <- function () {
       id = "box_sidebar",
       column(
         width = 12,
-        shiny::sliderInput(
+        sliderInput(
           inputId = "fps_slider",
           post = " fps",
           min = 1,
@@ -26,7 +28,7 @@ get_input_box <- function () {
 
     column(
       width = 12,
-      shiny::plotOutput(
+      plotOutput(
         outputId = "base_portrait",
         fill = TRUE,
         width = "100%",
@@ -35,7 +37,7 @@ get_input_box <- function () {
       )
     ),
     footer = tagList(
-      shiny::actionButton(
+      actionButton(
         inputId = "btn_submit",
         label = "Generate Output",
         width = "100%"

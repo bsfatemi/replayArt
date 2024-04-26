@@ -1,3 +1,6 @@
+#' Get Page Header for App
+#'
+#' @importFrom shiny HTML tags
 get_page_head <- function() {
   js_jpg <- '
 Shiny.addCustomMessageHandler("download_jpeg", function(b64){
@@ -65,9 +68,9 @@ Shiny.addCustomMessageHandler("download_mp4", function(b64){
       "#gif_replay img {max-width: 100%; width: 100%; height: auto}",
       "#img_zoom img {max-width: 100%; width: 100%; height: auto}"
     ),
-    tags$script(HTML(js_png)),
-    tags$script(HTML(js_jpg)),
-    tags$script(HTML(js_gif)),
-    tags$script(HTML(js_mp4))
+    tags$script(shiny::HTML(js_png)),
+    tags$script(shiny::HTML(js_jpg)),
+    tags$script(shiny::HTML(js_gif)),
+    tags$script(shiny::HTML(js_mp4))
   )
 }

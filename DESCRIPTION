@@ -20,14 +20,18 @@ Imports:
     shiny,
     shinyWidgets,
     ggplot2,
-    bslib,
     waiter,
     fs,
     data.table,
     magick,
     shinydashboard,
     shinydashboardPlus,
-    base64enc
+    base64enc,
+    grDevices,
+    shinyEffects,
+    ggpubr,
+    lubridate,
+    scales
 Depends: 
   R (>= 4.0)
 Suggests: 

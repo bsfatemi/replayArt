@@ -40,8 +40,9 @@ RUN install.r remotes
 # and the current package's DESCRIPTION file
 #
 ADD . rpkg
-RUN Rscript -e "remotes::install_local('rpkg')"
- # && rm -rf rpkg
+RUN Rscript -e "remotes::install_local('rpkg')" && rm -rf rpkg
+RUN Rscript -e "stopifnot('replayArt' %in% installed.packages()[,'Package'])"
+
 
 #------------------------------------------------------------
 # Specify shiny runtime options in Rprofile.site that was

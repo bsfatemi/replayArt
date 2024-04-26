@@ -3,6 +3,9 @@
 #' Functions required to execute and facililate an application user session.
 #'
 #' @import fs
+#' @importFrom magick image_read image_ggplot image_crop image_info geometry_area image_compare_dist image_write_gif image_write_video
+#' @importFrom data.table data.table
+#' @importFrom base64enc dataURI
 #'
 #' @name app-utils
 NULL
@@ -61,8 +64,6 @@ get_app_colors <- function() {
 
 
 
-#' @importFrom magick image_crop image_info geometry_area
-#'
 #' @param im image
 #' @param xmin xmin
 #' @param xmax xmax
@@ -81,11 +82,7 @@ image_crop2 <- function(im, xmin, xmax, ymin, ymax) {
   )
 }
 
-#' @importFrom data.table data.table
-#' @importFrom magick image_compare_dist
-#'
 #' @param gif gif image
-#'
 #' @describeIn app-utils function to get frames of a gif only if there are changes from prior frame
 get_comp_vec <- function(gif) {
   frames <- seq_along(gif)
@@ -102,28 +99,18 @@ get_comp_vec <- function(gif) {
   })
 }
 
-
-#' @importFrom magick image_read
-#' @importFrom fs path path_package
-#'
 #' @describeIn app-utils get base image for app
 get_full_img <- function() {
   get_app_dir("images/base8000.jpeg") |>
     magick::image_read()
 }
 
-#' @importFrom magick image_read
-#' @importFrom fs path path_package
-#'
 #' @describeIn app-utils get replay gif for app
 get_replay_gif <- function() {
   get_app_dir("images/frames.gif") |>
     magick::image_read()
 }
 
-#' @importFrom magick image_read image_ggplot
-#' @importFrom fs path path_package
-#'
 #' @describeIn app-utils get base image plot for app
 get_base_plot <- function() {
   get_app_dir("images/base1000.jpeg") |>
@@ -131,37 +118,48 @@ get_base_plot <- function() {
     magick::image_ggplot()
 }
 
-
+#' @param ... optional
+#' @describeIn app-utils get path to internal app files
 get_app_dir <- function(...) {
   fs::path_package("replayArt", "app", ...)
 }
+
+#' @param ... optional
+#' @describeIn app-utils get path to session temp dir
 get_temp_dir <- function(...) {
   fs::path(tempdir(), "temp", ...)
 }
 
+#' @describeIn app-utils create dirs on session start
 create_session_dir <- function() {
   fs::dir_create(get_temp_dir("frames"))
   fs::dir_create(get_temp_dir("graphics"))
 }
 
+#' @describeIn app-utils clear generated frames
 clear_frames_dir <- function() {
   get_temp_dir("frames") |>
     fs::dir_ls() |>
     fs::file_delete()
 }
 
-clear_temp_dir <- function() {
-  get_temp_dir() |>
-    fs::dir_ls(type = "file", recurse = TRUE) |>
-    fs::file_delete()
-}
-
+#' @describeIn app-utils clear generated graphics
 clear_graphics_dir <- function() {
   get_temp_dir("graphics") |>
     fs::dir_ls() |>
     fs::file_delete()
 }
 
+#' @describeIn app-utils clear all in temp dir
+clear_temp_dir <- function() {
+  get_temp_dir() |>
+    fs::dir_ls(type = "file", recurse = TRUE) |>
+    fs::file_delete()
+}
+
+
+#' @param img image object
+#' @describeIn app-utils write jpg
 write_jpg <- function(img) {
   img |>
     magick::image_write(
@@ -171,6 +169,8 @@ write_jpg <- function(img) {
     )
 }
 
+#' @param img image object
+#' @describeIn app-utils write png
 write_png <- function(img) {
   img |>
     magick::image_write(
@@ -179,6 +179,8 @@ write_png <- function(img) {
     )
 }
 
+#' @param gif gif object
+#' @describeIn app-utils write gif
 write_gif <- function(gif, fps) {
   gif |>
     magick::image_write_gif(
@@ -187,58 +189,71 @@ write_gif <- function(gif, fps) {
     )
 }
 
+#' @param gif gif object
+#' @param i frame number
+#' @describeIn app-utils write frame in gif
 write_frame <- function(gif, i) {
   outpath <- get_temp_dir("frames", paste0(i, ".jpeg"))
   magick::image_write(gif[i], outpath, format = "jpeg")
 }
 
+#' @param DT data for plot
+#' @param i frame number
+#' @importFrom ggplot2 ggplot aes geom_point geom_line coord_cartesian ggtitle theme element_blank scale_y_sqrt
+#' @importFrom ggpubr ggarrange
+#' @importFrom grDevices jpeg dev.off
+#' @describeIn app-utils write graph for given frame's data
 write_graphic <- function(DT, i) {
-  p <- ggplot(data = DT)
+  p <- ggplot2::ggplot(data = DT)
 
   outpath <- get_temp_dir("graphics", paste0(i, ".jpeg"))
-  jpeg(outpath, width = 858, height = 1200, res = 175)
+  grDevices::jpeg(outpath, width = 858, height = 1200, res = 175)
 
   graph1 <- p +
-    geom_point(data = DT[1:(i+1)], aes(x, strokes), color = "red") +
-    geom_line(data = DT[1:(i+1)], aes(x, strokes), color = "red") +
-    coord_cartesian(
+    ggplot2::geom_point(data = DT[1:(i+1)], ggplot2::aes(x, strokes), color = "red") +
+    ggplot2::geom_line(data = DT[1:(i+1)], ggplot2::aes(x, strokes), color = "red") +
+    ggplot2::coord_cartesian(
       xlim = c(0, nrow(DT)),
       ylim = c(min(DT$strokes), max(DT$strokes))
     ) +
-    ggtitle(label = "Strokes") +
-    theme(
-      axis.line.x = element_blank(),
-      axis.ticks.x = element_blank(),
-      axis.text.x = element_blank(),
-      axis.title = element_blank()
+    ggplot2::ggtitle(label = "Strokes") +
+    ggplot2::theme(
+      axis.line.x = ggplot2::element_blank(),
+      axis.ticks.x = ggplot2::element_blank(),
+      axis.text.x = ggplot2::element_blank(),
+      axis.title = ggplot2::element_blank()
     ) +
-    scale_y_sqrt()
+    ggplot2::scale_y_sqrt()
   graph2 <- p +
-    geom_point(data = DT[1:(i+1)], aes(x, hours), color = "blue") +
-    geom_line(data = DT[1:(i+1)], aes(x, hours), color = "blue") +
-    coord_cartesian(
+    ggplot2::geom_point(data = DT[1:(i+1)], ggplot2::aes(x, hours), color = "blue") +
+    ggplot2::geom_line(data = DT[1:(i+1)], ggplot2::aes(x, hours), color = "blue") +
+    ggplot2::coord_cartesian(
       xlim = c(0, nrow(DT)),
       ylim = c(min(DT$hours), max(DT$hours))
     ) +
-    ggtitle(label = "Hours") +
-    theme(
-      axis.line.x = element_blank(),
-      axis.ticks.x = element_blank(),
-      axis.text.x = element_blank(),
-      axis.title = element_blank()
+    ggplot2::ggtitle(label = "Hours") +
+    ggplot2::theme(
+      axis.line.x = ggplot2::element_blank(),
+      axis.ticks.x = ggplot2::element_blank(),
+      axis.text.x = ggplot2::element_blank(),
+      axis.title = ggplot2::element_blank()
     )
   graph <- ggpubr::ggarrange(
     graph1, graph2,
     ncol = 1,
     align = "hv"
   ) +
-    theme(plot.margin = margin(0,0,0,0, "cm"))
+    ggplot2::theme(plot.margin = ggplot2::margin(0,0,0,0, "cm"))
   print(graph)
 
-  dev.off()
+  grDevices::dev.off()
   invisible(NULL)
 }
 
+
+#' @param img_path image path
+#' @param session shiny session
+#' @describeIn app-utils trigger download
 trigger_image_dl <- function(img_path, session) {
   ext <- fs::path_ext(img_path)
   tmpfile <- fs::file_copy(
@@ -249,12 +264,19 @@ trigger_image_dl <- function(img_path, session) {
   session$sendCustomMessage(paste0("download_", ext), b64)
 }
 
+#' @param gif_path gif path
+#' @param session shiny session
+#' @describeIn app-utils trigger download
 trigger_gif_dl <- function(gif_path, session) {
   tmpfile <- fs::file_copy(gif_path, tempfile(fileext = ".gif"))
   b64 <- base64enc::dataURI(file = tmpfile, mime = "image/gif")
   session$sendCustomMessage("download_gif", b64)
 }
 
+#' @param gif_path gif path
+#' @param fps frames per second
+#' @param session shiny session
+#' @describeIn app-utils trigger download
 trigger_vid_dl <- function(gif_path, fps, session) {
   tmpfile <- tempfile(fileext = ".mp4")
 
@@ -266,6 +288,11 @@ trigger_vid_dl <- function(gif_path, fps, session) {
   session$sendCustomMessage("download_mp4", b64)
 }
 
+#' @param base_plot base plot
+#' @param x position of click
+#' @param y position of click
+#' @importFrom ggplot2 aes geom_rect
+#' @describeIn app-utils get plot based on click position
 get_click_plot <- function(base_plot, x, y) {
   base_plot +
     ggplot2::geom_rect(

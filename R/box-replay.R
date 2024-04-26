@@ -1,3 +1,7 @@
+#' Get Replay Box
+#'
+#' @importFrom shinyWidgets radioGroupButtons
+#'
 get_replay_box <- function() {
   shinydashboardPlus::box(
     height = "500px",

@@ -3,18 +3,16 @@
 #' Functions to run the package shiny app
 #'
 #' @import shiny
-#' @importFrom magick image_read image_info image_resize image_ggplot image_write_gif
-#' @importFrom shinyWidgets panel noUiSliderInput wNumbFormat dropMenu actionBttn
+#' @import shinydashboardPlus
+#' @importFrom shinyEffects setShadow
+#' @importFrom shinydashboard dashboardBody
 #' @importFrom waiter useWaiter waiter_preloader
-#' @importFrom bslib bs_theme
-#' @importFrom ggplot2 aes geom_rect
-#' @importFrom base64enc dataURI
 #'
 #' @name app-run
 NULL
 
 
-globalVariables(c("x2", "y2"))
+globalVariables(c("x2", "y2", "hours", "strokes", "x"))
 
 #' @describeIn app-run returns app object for subsequent execution
 #' @export
@@ -42,9 +40,7 @@ runReplayApp <- function() {
 }
 
 
-#' @import shinydashboardPlus
-#' @importFrom shinydashboard dashboardBody
-#'
+#' @importFrom lubridate today
 #' @describeIn app-run UI function for app
 app_ui <- function() {
   .colors <- get_app_colors()
@@ -63,8 +59,8 @@ app_ui <- function() {
     body = shinydashboard::dashboardBody(
 
       # use a bit of shinyEffects
-      setShadow(class = "dropdown-menu"),
-      setShadow(class = "box"),
+      shinyEffects::setShadow(class = "dropdown-menu"),
+      shinyEffects::setShadow(class = "box"),
 
       # some styling
       get_page_head(),
@@ -86,17 +82,18 @@ app_ui <- function() {
 }
 
 
+#' @importFrom scales percent
 #' @describeIn app-run server function for app
 app_server <- function() {
   function(input, output, session) {
 
-    updateBox("box_zoom_viewer", action = "remove")
-    updateBox("box_replay_viewer", action = "remove")
-    updateBox("box_frame_viewer", action = "remove")
+    shinydashboardPlus::updateBox("box_zoom_viewer", action = "remove")
+    shinydashboardPlus::updateBox("box_replay_viewer", action = "remove")
+    shinydashboardPlus::updateBox("box_frame_viewer", action = "remove")
 
-    output$user <- renderUser(get_user_box())
+    output$user <- shinydashboardPlus::renderUser(get_user_box())
 
-    shiny::onSessionEnded(fun = clear_temp_dir)
+    onSessionEnded(fun = clear_temp_dir)
 
     w <- new_waiter()
 

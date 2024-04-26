@@ -1,3 +1,5 @@
+#' Get Progress Stats
+#'
 get_progress_stats <- function() {
   column(
     width = 12,

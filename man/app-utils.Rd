@@ -9,8 +9,24 @@
 \alias{get_app_colors}
 \alias{image_crop2}
 \alias{get_comp_vec}
-\alias{get_base_plot}
+\alias{get_full_img}
 \alias{get_replay_gif}
+\alias{get_base_plot}
+\alias{get_app_dir}
+\alias{get_temp_dir}
+\alias{create_session_dir}
+\alias{clear_frames_dir}
+\alias{clear_graphics_dir}
+\alias{clear_temp_dir}
+\alias{write_jpg}
+\alias{write_png}
+\alias{write_gif}
+\alias{write_frame}
+\alias{write_graphic}
+\alias{trigger_image_dl}
+\alias{trigger_gif_dl}
+\alias{trigger_vid_dl}
+\alias{get_click_plot}
 \title{App Utils}
 \usage{
 new_waiter(session = NULL)
@@ -27,12 +43,44 @@ image_crop2(im, xmin, xmax, ymin, ymax)
 
 get_comp_vec(gif)
 
-get_base_plot()
+get_full_img()
 
 get_replay_gif()
+
+get_base_plot()
+
+get_app_dir(...)
+
+get_temp_dir(...)
+
+create_session_dir()
+
+clear_frames_dir()
+
+clear_graphics_dir()
+
+clear_temp_dir()
+
+write_jpg(img)
+
+write_png(img)
+
+write_gif(gif, fps)
+
+write_frame(gif, i)
+
+write_graphic(DT, i)
+
+trigger_image_dl(img_path, session)
+
+trigger_gif_dl(gif_path, session)
+
+trigger_vid_dl(gif_path, fps, session)
+
+get_click_plot(base_plot, x, y)
 }
 \arguments{
-\item{session}{shiny session object}
+\item{session}{shiny session}
 
 \item{msg}{message for waiter screen}
 
@@ -46,7 +94,27 @@ get_replay_gif()
 
 \item{ymax}{ymax}
 
-\item{gif}{gif image}
+\item{gif}{gif object}
+
+\item{...}{optional}
+
+\item{img}{image object}
+
+\item{fps}{frames per second}
+
+\item{i}{frame number}
+
+\item{DT}{data for plot}
+
+\item{img_path}{image path}
+
+\item{gif_path}{gif path}
+
+\item{base_plot}{base plot}
+
+\item{x}{position of click}
+
+\item{y}{position of click}
 }
 \description{
 Functions required to execute and facililate an application user session.
@@ -67,8 +135,40 @@ Functions required to execute and facililate an application user session.
 
 \item \code{get_comp_vec()}: function to get frames of a gif only if there are changes from prior frame
 
-\item \code{get_base_plot()}: get base image plot for app
+\item \code{get_full_img()}: get base image for app
 
 \item \code{get_replay_gif()}: get replay gif for app
+
+\item \code{get_base_plot()}: get base image plot for app
+
+\item \code{get_app_dir()}: get path to internal app files
+
+\item \code{get_temp_dir()}: get path to session temp dir
+
+\item \code{create_session_dir()}: create dirs on session start
+
+\item \code{clear_frames_dir()}: clear generated frames
+
+\item \code{clear_graphics_dir()}: clear generated graphics
+
+\item \code{clear_temp_dir()}: clear all in temp dir
+
+\item \code{write_jpg()}: write jpg
+
+\item \code{write_png()}: write png
+
+\item \code{write_gif()}: write gif
+
+\item \code{write_frame()}: write frame in gif
+
+\item \code{write_graphic()}: write graph for given frame's data
+
+\item \code{trigger_image_dl()}: trigger download
+
+\item \code{trigger_gif_dl()}: trigger download
+
+\item \code{trigger_vid_dl()}: trigger download
+
+\item \code{get_click_plot()}: get plot based on click position
 
 }}

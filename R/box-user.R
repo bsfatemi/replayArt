@@ -1,5 +1,5 @@
-# function() {}
-
+#' Get User Box
+#'
 get_user_box <- function() {
   dashboardUser(
     name = "Bobby Fatemi",
@@ -58,11 +58,6 @@ get_user_box <- function() {
           marginBottom = FALSE
         )
       )
-      # dashboardUserItem(
-      #   width = 12,
-      #
-      #
-      # )
     )
   )
 }

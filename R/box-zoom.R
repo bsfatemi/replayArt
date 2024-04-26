@@ -1,3 +1,5 @@
+#' Get Zoom Box
+#'
 get_zoom_box <- function() {
   shinydashboardPlus::box(
     height = "500px",
@@ -23,6 +25,6 @@ get_zoom_box <- function() {
         )
       )
     ),
-    shiny::imageOutput("img_zoom", fill = TRUE, inline = TRUE)
+    imageOutput("img_zoom", fill = TRUE, inline = TRUE)
   )
 }
