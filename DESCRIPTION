@@ -19,18 +19,15 @@ Config/testthat/edition: 3
 Imports:
     shiny,
     shinyWidgets,
-    shinycssloaders,
     ggplot2,
     bslib,
     waiter,
     fs,
-    stringr,
     data.table,
     magick,
-    grDevices,
-    imager,
-    dplyr,
-    scales
+    shinydashboard,
+    shinydashboardPlus,
+    base64enc
 Depends: 
   R (>= 4.0)
 Suggests: 

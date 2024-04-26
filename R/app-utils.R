@@ -102,15 +102,16 @@ get_comp_vec <- function(gif) {
   })
 }
 
-#' @importFrom magick image_read image_ggplot
+
+#' @importFrom magick image_read
 #' @importFrom fs path path_package
 #'
-#' @describeIn app-utils get base image plot for app
-get_base_plot <- function() {
+#' @describeIn app-utils get base image for app
+get_full_img <- function() {
   fs::path_package("replayArt") |>
-    fs::path("app/images/base1000.png") |>
+    fs::path("app/images/base8k.png") |>
     magick::image_read() |>
-    magick::image_ggplot()
+    magick::image_resize("8000")
 }
 
 #' @importFrom magick image_read
@@ -123,3 +124,31 @@ get_replay_gif <- function() {
     magick::image_read()
 }
 
+#' @importFrom magick image_read image_ggplot
+#' @importFrom fs path path_package
+#'
+#' @describeIn app-utils get base image plot for app
+get_base_plot <- function() {
+  fs::path_package("replayArt") |>
+    fs::path("app/images/base1000.png") |>
+    magick::image_read() |>
+    magick::image_ggplot()
+}
+
+
+get_app_dir <- function(...) {
+  fs::path_package("replayArt", "app", ...)
+}
+get_temp_dir <- function(...) {
+  fs::path(tempdir(), "temp", ...)
+}
+
+create_session_dir <- function() {
+  fs::dir_create(get_temp_dir("temp",  "frames"))
+}
+
+clear_frames_dir <- function() {
+  get_temp_dir("frames") |>
+    fs::dir_ls() |>
+    fs::file_delete()
+}
