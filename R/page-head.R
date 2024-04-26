@@ -1,6 +1,6 @@
 get_page_head <- function() {
   js_jpg <- '
-Shiny.addCustomMessageHandler("download_jpg", function(b64){
+Shiny.addCustomMessageHandler("download_jpeg", function(b64){
       const a = document.createElement("a");
       document.body.append(a);
       a.download = "steph-artwork-zoom.jpeg";
