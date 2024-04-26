@@ -27,15 +27,15 @@ runReplayApp <- function() {
 
       fs::file_copy(
         get_app_dir("images/init.gif"),
-        get_temp_dir("temp/init.gif")
+        get_temp_dir("init.gif")
       )
       fs::file_copy(
         get_app_dir("images/init.jpeg"),
-        get_temp_dir("temp/init.jpeg")
+        get_temp_dir("init.jpeg")
       )
       fs::file_copy(
         get_app_dir("images/init.png"),
-        get_temp_dir("temp/init.png")
+        get_temp_dir("init.png")
       )
     }
   )
@@ -318,6 +318,11 @@ app_server <- function() {
       xmax <- min(r_click_x() + 200, 1000)
       ymin <- r_click_y()
       ymax <- min(r_click_y() + 200, 1000)
+
+      print(xmin)
+      print(xmax)
+      print(ymin)
+      print(ymax)
 
       ## Note
       ## Scale the coords because replay and full image are X times
