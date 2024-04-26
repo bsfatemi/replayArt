@@ -109,9 +109,8 @@ get_comp_vec <- function(gif) {
 #' @describeIn app-utils get base image for app
 get_full_img <- function() {
   fs::path_package("replayArt") |>
-    fs::path("app/images/base8k.png") |>
-    magick::image_read() |>
-    magick::image_resize("8000")
+    fs::path("app/images/base8000.jpeg") |>
+    magick::image_read()
 }
 
 #' @importFrom magick image_read
@@ -130,7 +129,7 @@ get_replay_gif <- function() {
 #' @describeIn app-utils get base image plot for app
 get_base_plot <- function() {
   fs::path_package("replayArt") |>
-    fs::path("app/images/base1000.png") |>
+    fs::path("app/images/base1000.jpeg") |>
     magick::image_read() |>
     magick::image_ggplot()
 }
@@ -144,7 +143,7 @@ get_temp_dir <- function(...) {
 }
 
 create_session_dir <- function() {
-  fs::dir_create(get_temp_dir("temp",  "frames"))
+  fs::dir_create(get_temp_dir("frames"))
 }
 
 clear_frames_dir <- function() {
